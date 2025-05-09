@@ -8,13 +8,15 @@ import { Radio } from "./Radio";
 import { Shadows } from "@/constants/Shadows";
 
 type Props = {
-    value: "id" | "name",
-    onChange: (v: "id" | "name") => void
+    value: "id_asc" | "id_desc" | "name_asc" | "name_desc",
+    onChange: (v: "id_asc" | "id_desc" | "name_asc" | "name_desc") => void
 }
 
 const options = [
-    {label: "Number", value: "id" },
-    {label: "Name", value: "name" }
+    {label: "Number (Ascending)", value: "id_asc" },
+    {label: "Number (Descending)", value: "id_desc" },
+    {label: "Name (A → Z)", value: "name_asc" },
+    {label: "Name (Z → A)", value: "name_desc" }
 ] as const;
 
 export function SortButton({ value, onChange }: Props) {
@@ -46,7 +48,7 @@ export function SortButton({ value, onChange }: Props) {
                 >
                     <Image
                         source={
-                            value == "id"
+                            value.includes("id")
                                 ? require("@/assets/images/number.png")
                                 : require("@/assets/images/alpha.png")
                         }
@@ -70,7 +72,13 @@ export function SortButton({ value, onChange }: Props) {
                     </ThemedText>
                     <Card style={styles.card}>
                         {options.map((o) => (
-                            <Pressable key={o.value} onPress={() => onChange(o.value)}>
+                            <Pressable
+                                key={o.value}
+                                onPress={() => {
+                                    onChange(o.value);
+                                    setModalVisible(false);
+                                }}
+                            >
                                 <Row gap={8}>
                                     <Radio checked={o.value == value} />
                                     <ThemedText>{o.label}</ThemedText>
@@ -99,7 +107,7 @@ const styles = StyleSheet.create({
     },
     popup: {
         position: "absolute",
-        width: 113,
+        width: 170,
         padding: 4,
         paddingTop: 16,
         gap: 16,
